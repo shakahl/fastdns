@@ -35,7 +35,7 @@ func (tr *Transport) roundTrip(req, resp *Message) error {
 		return err
 	}
 
-	n, err := conn.Write(req.Raw)
+	_, err = conn.Write(req.Raw)
 	if err != nil && pooled {
 		// if error from pooled conn, let's close it & retry again
 		conn.Close()
@@ -48,7 +48,7 @@ func (tr *Transport) roundTrip(req, resp *Message) error {
 	}
 
 	resp.Raw = resp.Raw[:cap(resp.Raw)]
-	n, err = conn.Read(resp.Raw)
+	n, err := conn.Read(resp.Raw)
 	if err == nil {
 		resp.Raw = resp.Raw[:n]
 		err = ParseMessage(resp, resp.Raw, false)
